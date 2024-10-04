@@ -3,7 +3,7 @@
 # Запустить
 >ansible-playbook user.yml && ansible-playbook wg.yml && ansible-playbook ssh_iptables.yml
 # ENVs
->[my_servers:vars]
+[my_servers:vars]
 wireguard_host_ip=ip_server
 wireguard_admin_password=password
 wireguard_port_tcp=55556
