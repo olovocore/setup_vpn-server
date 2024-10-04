@@ -1,0 +1,25 @@
+- name: Add User and public SSH key
+  hosts: my_servers
+  become: yes
+  tasks:
+    - name: User Add
+      user:
+        name: "{{ username }}"
+        shell: /bin/bash
+        create_home: yes
+        state: present
+        groups: "sudo,docker"
+        append: yes
+        password: "{{password_username}}"
+    - name:  Create directory .ssh
+      file:
+        path: /home/"{{ username }}"/.ssh
+        state: directory
+        owner:  "{{ username }}"
+        group: "{{ username }}"
+        mode: "700"
+    - name: SSH key public
+      authorized_key:
+        user: "{{ username }}"
+        state: present
+        key: "{{ ssh_key }}"

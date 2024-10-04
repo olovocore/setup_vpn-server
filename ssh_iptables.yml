@@ -1,0 +1,81 @@
+- name: setup SSH and config iptables
+  hosts: my_servers
+  become: yes
+  tasks:
+    - name: Allow TCP on port SSH
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: "{{ ssh_port | string}}"
+        jump: ACCEPT
+        state: present
+    - name: Allow TCP on port 53
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: "53"
+        jump: ACCEPT
+        state: present
+    - name: Allow UDP on port 53
+      iptables:
+        chain: INPUT
+        protocol: udp
+        destination_port: "53"
+        jump: ACCEPT
+        state: present
+    - name: Allow ICMP traffic
+      iptables:
+        chain: INPUT
+        protocol: icmp
+        jump: ACCEPT
+        state: present
+    - name: Allow TCP on port 10050
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: "10050"
+        jump: ACCEPT
+        state: present
+    - name: Allow UDP on port WG
+      iptables:
+        chain: INPUT
+        protocol: udp
+        destination_port: "{{ wireguard_port_udp | string}}"
+        jump: ACCEPT
+        state: present
+    - name: Allow TCP on port WG
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: "{{ wireguard_port_tcp | string}}"
+        jump: ACCEPT
+        state: present
+    - name: Allow related and established connections
+      iptables:
+        chain: INPUT
+        match: state
+        ctstate: RELATED,ESTABLISHED
+        jump: ACCEPT
+        protocol: all
+        state: present
+    - name: SSH setup
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        line: "{{ item }}"
+        state: present
+        regexp: "^{{ item.split(' ')[0] }}"
+      loop:
+        - "PubkeyAuthentication yes"
+        - "PermitRootLogin no"
+        - "PasswordAuthentication no"
+        - "Port {{ ssh_port }}"
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted
+    - name: Set default policy for INPUT chain to DROP
+      iptables:
+        chain: INPUT
+        policy: DROP
+        state: present   
+         
