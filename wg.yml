@@ -26,4 +26,14 @@
         sysctls:
           net.ipv4.conf.all.src_valid_mark: "1"
           net.ipv4.ip_forward: "1"
-
+    - name: Run 3proxy
+      docker_container:
+        name: 3proxy
+        image: riftbit/3proxy
+        state: started
+        restart_policy: unless-stopped
+        ports:
+          - "{{ proxy_port_tcp_https}}:3128/tcp"
+        env:
+          PROXY_LOGIN: "{{ proxy_login }}"
+          PROXY_PASSWORD: "{{ proxy_password }}"

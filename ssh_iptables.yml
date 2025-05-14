@@ -50,6 +50,13 @@
         destination_port: "{{ wireguard_port_tcp | string}}"
         jump: ACCEPT
         state: present
+    - name: Allow TCP on port 3proxy
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: "{{ proxy_port_tcp_https | string}}"
+        jump: ACCEPT
+        state: present
     - name: Allow related and established connections
       iptables:
         chain: INPUT
