@@ -4,7 +4,7 @@
 >ansible-playbook user.yml && ansible-playbook wg.yml && ansible-playbook ssh_iptables.yml
 # inventory.ini
 [my_servers]<br>
-server1 ansible_host=server_ip ansible_port=ssh_port
+server1 ansible_host=server_ip ansible_port=ssh_port<br>
 [my_servers:vars]<br>
 wireguard_host_ip=ip_server<br>
 wireguard_admin_password=password<br>
@@ -14,8 +14,8 @@ username=user_server<br>
 ssh_key="{{ lookup('file', '/home/user/.ssh/id_rsa.pub') }}"<br>
 ssh_port=8888<br>
 password_username="{{ 'password' | password_hash('sha512') }}"<br>
-# ansible.cfg
-[defaults]
-inventory = ./inventory.ini
-remote_user = root
+# ansible.cfg<br>
+[defaults]<br>
+inventory = ./inventory.ini<br>
+remote_user = root<br>
 private_key_file = path_to_private_ssh_key
