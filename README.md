@@ -2,7 +2,9 @@
 Плейбуки необходимы для настройки SSH, iptables, создания пользователя и запуска WireGuard с GUI и 3proxy http.
 # Запустить
 >ansible-playbook user.yml && ansible-playbook wg.yml && ansible-playbook ssh_iptables.yml
-# ENVs
+# inventory.ini
+[my_servers]<br>
+server1 ansible_host=server_ip ansible_port=ssh_port
 [my_servers:vars]<br>
 wireguard_host_ip=ip_server<br>
 wireguard_admin_password=password<br>
@@ -12,3 +14,8 @@ username=user_server<br>
 ssh_key="{{ lookup('file', '/home/user/.ssh/id_rsa.pub') }}"<br>
 ssh_port=8888<br>
 password_username="{{ 'password' | password_hash('sha512') }}"<br>
+# ansible.cfg
+[defaults]
+inventory = ./inventory.ini
+remote_user = root
+private_key_file = path_to_private_ssh_key
